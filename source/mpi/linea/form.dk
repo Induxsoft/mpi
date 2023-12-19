@@ -1,0 +1,63 @@
+#include "dkli.dkh"
+#!
+module "form.dk"
+{
+    #include "functions.dkh"
+    #include "serialize.dkh"
+    #include "../config.dk"
+
+    do @context.begin(@crud_context)
+
+    ref linea = @("&./")
+    entityId = @("$parameters/_entity_id")
+    errorMsg = @("$error/message")
+    isNewEnt = (entityId == "_new")
+    formActn = replace(@MPI_ADD_EDIT_LINEA, "@id", entityId)
+
+    #$ div(class="container")
+    {
+        form(method="POST" action="#<formActn>" id="form")
+        {
+            div(id="main_bar" class="row container-section m-0 px-0 py-2 border-bottom")
+            {
+                div(class="col-4 d-flex align-items-center p-0")
+                {
+                    h6(class="tex-no-break m-0"){$"#<ifstr(isNewEnt,'Agregar','Editar')> línea"}
+                }
+                div(class="col-8 d-flex align-items-center justify-content-end p-0 gap-2")
+                {
+                    button(type="submit" class="btn btn-sm border-secondary induxsoft-corners btn-main-action"){
+                        $'#<@@(@icons,"save")>'
+                    }
+                    a(class="btn btn-sm border-secondary induxsoft-corners btn-main-action" href="#<@MPI_LINEA>") {
+                        svg(xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16") {
+                            path(d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z")
+                        }
+                    }
+                }
+            }
+            div(id="work_area" class="container-section")
+            {
+                #! if trim(errorMsg) != "" { #$ small{$"#<errorMsg>"} }
+
+                #$
+                input(type="hidden" name="sys_pk" value="#<@@(linea, '#sys_pk')>")
+                input(type="hidden" name="sys_recver" value="#<@@(linea, '#sys_recver')>")
+                input(type="hidden" name="clase" value="#<field.dnum(linea,'clase',1)>")
+
+                small{$"Código:"}
+                input(type="text" class="induxsoft-form-control mb-2" name="codigo" value="#<@@(linea,'$codigo')>")
+
+                small{$"Descripción:"}
+                input(type="text" class="induxsoft-form-control mb-2" name="descripcion" value="#<@@(linea,'$descripcion')>")
+
+                small{$"Notas:"}
+                textarea(class="induxsoft-form-control mb-2"){$"#<@@(linea,'$notas')>"}
+            }
+            div(id="status_bar" class="container-section")
+            {
+                $""
+            }
+        }
+    }
+}

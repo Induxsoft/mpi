@@ -1,0 +1,67 @@
+#include "dkli.dkh"
+#!
+module "list.dk"
+{
+    #include "functions.dkh"
+    #include "serialize.dkh"
+    #include "../config.dk"
+
+    do @context.begin(@crud_context)
+    ref lineas = @('&.')
+    
+    #$ div(class="container p-0")
+    {
+        div(id="main_bar" class="row container-section m-0 px-0 py-2 border-bottom")
+        {
+            div(class="col-4 d-flex align-items-center p-0")
+            {
+                h6(class="tex-no-break m-0"){$"Líneas"}
+            }
+            div(class="col-8 d-flex align-items-center justify-content-end p-0 gap-2")
+            {
+                a(href="#<replace(@MPI_ADD_EDIT_LINEA, '@id', '_new')>" class="btn btn-sm border-secondary induxsoft-corners btn-main-action"){$"Agregar"}
+            }
+        }
+        div(id="work_area" class="container-section")
+        {
+            table(class="table")
+            {
+                thead
+                {
+                    tr
+                    {
+                        th{$"Código"}
+                        th{$"Descipción"}
+                        th(class="text-center"){$"Acciones"}
+                    }
+                }
+                tbody
+                {
+                    $""
+                    #! for i = 0; i < list.count(lineas)
+                    {
+                        ref linea = list.obj(lineas, i)
+
+                        #$ tr
+                        {
+                            td{$"#<@@(linea,'$codigo')>"}
+                            td{$"#<@@(linea,'$descripcion')>"}
+                            td
+                            {
+                                div(class="d-flex gap-2 justify-content-center")
+                                {
+                                    a(href="#<replace(@MPI_ADD_EDIT_LINEA, '@id', @@(linea,'sys_pk'))>" class="btn btn-sm btn-light"){$"Editar"}
+                                    button(class="btn btn-sm btn-light" onclick="InduxsoftCrudlModel.Delete(#<@@(linea,'sys_pk')>)"){$"Eliminar"}
+                                }
+                            }
+                        }
+                    } 
+                }
+            }
+        }
+        div(id="status_bar" class="container-section")
+        {
+            $""
+        }
+    }
+}

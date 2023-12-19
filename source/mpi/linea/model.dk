@@ -1,0 +1,12 @@
+#include "dkli.dkh"
+#!
+module "model"
+{
+    @table_name = "linea"
+
+    @list_query = "
+        SELECT sys_pk, clase, codigo, descripcion, IFNULL(notas,'') notas
+        FROM linea
+        WHERE clase = 1
+            AND IF(IFNULL(@s,'')='', true, (codigo LIKE CONCAT('%',@s,'%') OR descripcion LIKE CONCAT('%',@s,'%')));"
+}

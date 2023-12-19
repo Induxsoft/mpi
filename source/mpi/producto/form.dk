@@ -1,0 +1,205 @@
+#include "dkli.dkh"
+#!
+module "form.dk"
+{
+    #include "functions.dkh"
+    #include "serialize.dkh"
+    #include "dbr.dkh"
+    #include "uielements.dkl"
+    #include "../config.dk"
+    #include "lib.dk"
+
+    do @context.begin(@crud_context)
+
+    ref producto = @("&./")
+    ref database = @("&database")
+    ref divisa = lib.get_divisa(database, @@(producto,"$idivisa"))
+
+    entityId = @("$parameters/_entity_id")
+    errorMsg = @("$error/message")
+    isNewEnt = (entityId == "_new")
+    formActn = replace(@MPI_ADD_EDIT_PRODUCTO, "@id", entityId)
+
+    #$ div(class="container")
+    {
+        form(method="POST" action="#<formActn>" id="form")
+        {
+            div(id="main_bar" class="row container-section m-0 px-0 py-2 border-bottom")
+            {
+                div(class="col-4 d-flex align-items-center p-0")
+                {
+                    h6(class="tex-no-break m-0"){$"#<ifstr(isNewEnt,'Agregar','Editar')> producto"}
+                }
+                div(class="col-8 d-flex align-items-center justify-content-end p-0 gap-2")
+                {
+                    button(type="submit" class="btn btn-sm border-secondary induxsoft-corners btn-main-action"){
+                        $'#<@@(@icons,"save")>'
+                    }
+                    a(class="btn btn-sm border-secondary induxsoft-corners btn-main-action" href="#<@MPI_PRODUCTO>") {
+                        svg(xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16") {
+                            path(d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z")
+                        }
+                    }
+                }
+            }
+            div(id="work_area" class="container-section")
+            {
+                #! if trim(errorMsg) != "" { #$ small{$"#<errorMsg>"} }
+
+                #$
+                input(type="hidden" name="sys_pk" value="#<@@(producto, '#sys_pk')>")
+                input(type="hidden" name="sys_recver" value="#<@@(producto, '#sys_recver')>")
+                input(type="hidden" name="clase" value="#<field.dnum(producto,'clase',1)>")
+
+                // NAV TABS
+                ul(class="nav nav-tabs mt-3" id="myTab" role="tablist")
+                {
+                    li(class="nav-item" role="presentation") {
+                        button(class="nav-link active" id="general-tab" "data-bs-toggle"="tab" "data-bs-target"="#general" type="button" role="tab" "aria-controls"="general" "aria-selected"="true"){$"General"}
+                    }
+                    li(class="nav-item" role="presentation") {
+                        button(class="nav-link" id="control-tab" "data-bs-toggle"="tab" "data-bs-target"="#control" type="button" role="tab" "aria-controls"="control" "aria-selected"="false"){$"Control"}
+                    }
+                    li(class="nav-item" role="presentation") {
+                        button(class="nav-link" id="notes-tab" "data-bs-toggle"="tab" "data-bs-target"="#notes" type="button" role="tab" "aria-controls"="notes" "aria-selected"="false"){$"Notas"}
+                    }
+                    li(class="nav-item" role="presentation") {
+                        button(class="nav-link" id="sat-tab" "data-bs-toggle"="tab" "data-bs-target"="#sat" type="button" role="tab" "aria-controls"="sat" "aria-selected"="false"){$"SAT"}
+                    }
+                }
+
+                // PANEL TABS
+                div(class="tab-content" id="tabContent")
+                {
+                    div(class="tab-pane fade show active" id="general" role="tabpanel" "aria-labelledby"="general-tab")
+                    {
+                        div(class="border-bottom py-4")
+                        {
+                            small{$"Código:"}
+                            input(type="text" class="induxsoft-form-control mb-2" name="codigo" value="#<@@(producto,'$codigo')>")
+                            small{$"Descripción:"}
+                            input(type="text" class="induxsoft-form-control mb-2" name="descripcion" value="#<@@(producto,'$descripcion')>")
+                            small{$"Línea:"}
+                            "input-key"(id="ik_linea" name="ilinea" "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_LINEA>" columns="codigo,descripcion" colcaptions="Código,Descripción" required="true" "box-title-text"="Seleccione una línea" "box-placeholder-text"="Buscar línea" "box-nodata-text"="No se encontraron líneas"){$""}
+                            small{$"Tipo:"}
+                            #! do uie.dbSelect(lib.def_tipos_producto(database, @@(producto,'itipo')))
+                            #$ small{$"Moneda:"}
+                            "input-key"(id="ik_divisa" name="idivisa" "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_DIVISA>" columns="codigo,descripcion" colcaptions="Código,Descripción" required="true" "box-title-text"="Seleccione una moneda" "box-placeholder-text"="Buscar moneda" "box-nodata-text"="No se encontraron monedas" "data-value"='#<to.json(divisa)>'){$""}
+                        }
+                        div(class="border-bottom py-4")
+                        {
+                            div(class="d-flex gap-2 align-items-center")
+                            {
+                                small{$"Unidad estandar:"}
+                                input(type="text" class="induxsoft-form-control mb-2" name="unidad" value="#<@@(producto,'$unidad')>")
+                                small{$"x Factor:"}
+                                input(type="number" class="induxsoft-form-control mb-2" name="factorb" value="#<@@(producto,'#factorb')>")
+                                small{$"= Unidad de compra:"}
+                                input(type="text" class="induxsoft-form-control mb-2" name="unidadB" value="#<@@(producto,'$unidadB')>")
+                            }
+                            div(class="d-flex gap-2 align-items-center")
+                            {
+                                small{$"Método de valuación:"}
+                                #! do uie.dbSelect(lib.def_metodo_valuacion(database, @@(producto,'metodovaluacion')))
+                                #$ small{$"Impuestos:"}
+                                #! do uie.dbSelect(lib.def_metodo_valuacion(database, @@(producto,'impuestos')))
+                            }
+                        }
+                        #$ div(class="border-bottom py-4")
+                        {
+                            small{$"último costo:"}
+                            input(type="number" class="induxsoft-form-control mb-2" name="costoultimo" value="#<@@(producto,'#costoultimo')>")
+                        }
+                        div
+                        {
+                            small{$"Código de barras 1:"}
+                            input(type="text" class="induxsoft-form-control mb-2" name="codbar1" value="#<@@(producto,'#codbar1')>")
+                            small{$"Código de barras 2:"}
+                            input(type="text" class="induxsoft-form-control mb-2" name="codbar2" value="#<@@(producto,'#codbar2')>")
+                            small{$"Código de barras 3:"}
+                            input(type="text" class="induxsoft-form-control mb-2" name="codbar3" value="#<@@(producto,'#codbar3')>")
+                        }
+                    }
+
+                    div(class="tab-pane fade" id="control" role="tabpanel" "aria-labelledby"="control-tab")
+                    {
+                        div(class="border-bottom py-4")
+                        {
+                            small{$"Departamento:"}
+                            "input-key"(id="ik_departamento" name="idepartamento" "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_DEPARTAMENTO>" columns="codigo,descripcion" colcaptions="Código,Descripción" required="true" "box-title-text"="Seleccione un departamento" "box-placeholder-text"="Buscar departamento" "box-nodata-text"="No se encontraron departamentos"){$""}
+                            small{$"Marca:"}
+                            "input-key"(id="ik_marca" name="imarca" "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_MARCA>" columns="codigo,descripcion" colcaptions="Código,Descripción" required="true" "box-title-text"="Seleccione una marca" "box-placeholder-text"="Buscar marca" "box-nodata-text"="No se encontraron marcas"){$""}
+                        }
+                        div(class="border-bottom py-4")
+                        {
+                            div(class="d-flex gap-2")
+                            {
+                                small{$"Unidad:"}
+                                input(type="text" class="induxsoft-form-control mb-2" name="unidadc" value="#<@@(producto,'$unidadc')>")
+                                small{$"Factor:"}
+                                input(type="number" class="induxsoft-form-control mb-2" name="factorc" value="#<@@(producto,'#factorc')>")
+                            }
+                            div(class="d-flex gap-2")
+                            {
+                                small{$"Unidad:"}
+                                input(type="text" class="induxsoft-form-control mb-2" name="unidadd" value="#<@@(producto,'$unidadd')>")
+                                small{$"Factor:"}
+                                input(type="number" class="induxsoft-form-control mb-2" name="factord" value="#<@@(producto,'#factord')>")
+                            }
+                            div(class="d-flex gap-2")
+                            {
+                                small{$"Unidad:"}
+                                input(type="text" class="induxsoft-form-control mb-2" name="unidade" value="#<@@(producto,'$unidade')>")
+                                small{$"Factor:"}
+                                input(type="number" class="induxsoft-form-control mb-2" name="factore" value="#<@@(producto,'#factore')>")
+                            }
+                        }
+                        div(class="border-bottom py-4")
+                        {
+                            div(class="d-flex gap-2")
+                            {
+                                small{$"Máximo:"}
+                                input(type="number" class="induxsoft-form-control mb-2" name="maximo" value="#<@@(producto,'#maximo')>")
+                                small{$"Punto de reorden:"}
+                                input(type="number" class="induxsoft-form-control mb-2" name="puntoro" value="#<@@(producto,'#puntoro')>")
+                            }
+                            div(class="d-flex gap-2")
+                            {
+                                small{$"Mínimo:"}
+                                input(type="number" class="induxsoft-form-control mb-2" name="minimo" value="#<@@(producto,'#minimo')>")
+                                small{$"Punto de reorden:"}
+                                input(type="number" class="induxsoft-form-control mb-2" name="diasentrega" value="#<@@(producto,'#diasentrega')>")
+                            }
+                        }
+                        div(class="border-bottom py-4")
+                        {
+                            small{$"Proveedor 1:"}
+                            "input-key"(id="ik_proveedor1" name="proveedor1" "data-key"="sys_pk" "data-search"="codigo" "data-text"="nombre" "data-source"="#<@MPI_SEARCH_PROVEEDOR>" columns="codigo,nombre" colcaptions="Código,Nombre" required="true" "box-title-text"="Seleccione un proveedor" "box-placeholder-text"="Buscar proveedor" "box-nodata-text"="No se encontraron proveedores"){$""}
+                            small{$"Proveedor 2:"}
+                            "input-key"(id="ik_proveedor2" name="proveedor2" "data-key"="sys_pk" "data-search"="codigo" "data-text"="nombre" "data-source"="#<@MPI_SEARCH_PROVEEDOR>" columns="codigo,nombre" colcaptions="Código,Nombre" required="true" "box-title-text"="Seleccione un proveedor" "box-placeholder-text"="Buscar proveedor" "box-nodata-text"="No se encontraron proveedores"){$""}
+                            small{$"Proveedor 3:"}
+                            "input-key"(id="ik_proveedor2" name="proveedor2" "data-key"="sys_pk" "data-search"="codigo" "data-text"="nombre" "data-source"="#<@MPI_SEARCH_PROVEEDOR>" columns="codigo,nombre" colcaptions="Código,Nombre" required="true" "box-title-text"="Seleccione un proveedor" "box-placeholder-text"="Buscar proveedor" "box-nodata-text"="No se encontraron proveedores"){$""}
+                        }
+                    }
+
+                    div(class="tab-pane fade" id="notes" role="tabpanel" "aria-labelledby"="notes-tab")
+                    {
+                        small{$"Notas:"}
+                        textarea(name="notas" class="induxsoft-form-control" rows="30"){$"#<@@(producto,'$notas')>"}
+                    }
+                    div(class="tab-pane fade" id="sat" role="tabpanel" "aria-labelledby"="sat-tab")
+                    {
+                        small{$"Producto y/o servicio del SAT:"}
+                        input(type="text" class="induxsoft-form-control mb-2" name="uf_sat_proser" value="#<@@(producto,'$uf_sat_proser')>")
+                        small{$"Unidad del producto y/o servicio del SAT:"}
+                        input(type="text" class="induxsoft-form-control mb-2" name="uf_sat_uniproser" value="#<@@(producto,'$uf_sat_uniproser')>")
+                    }
+                }
+            }
+            div(id="status_bar" class="container-section")
+            {
+                $""
+            }
+        }
+    }
+}

@@ -1,0 +1,58 @@
+#include "dkli.dkh"
+#!
+module "lib"
+{
+    function lib.def_tipos_producto(&db, value)
+    {
+        new def
+        {
+            @"datatable*":dbr.list(db, "select id, const from ctipoproducto", @null)
+            member "attributes"
+            {
+                @"name":"itipo"
+                @"class":"induxsoft-form-select"
+            }
+            @"text_field":"const"
+            @"value_field":"id"
+            @"selected":value
+        }
+        return def
+    }
+    function lib.def_metodo_valuacion(&db, value)
+    {
+        new def
+        {
+            @"datatable*":dbr.list(db, "select id, const from cmetodosvaluacion", @null)
+            member "attributes"
+            {
+                @"name":"metodovaluacion"
+                @"class":"induxsoft-form-select"
+            }
+            @"text_field":"const"
+            @"value_field":"id"
+            @"selected":value
+        }
+        return def
+    }
+    function lib.def_impuestos(&db, value)
+    {
+        new def
+        {
+            @"datatable*":dbr.list(db, "select sys_pk, nombre from cfgimpuesto", @null)
+            member "attributes"
+            {
+                @"name":"impuestos"
+                @"class":"induxsoft-form-select"
+            }
+            @"text_field":"nombre"
+            @"value_field":"sys_pk"
+            @"selected":value
+        }
+        return def
+    }
+    function lib.get_divisa(&db,code)
+    {
+        new prm { @"code": code }
+        return dbr.rec(db, "SELECT sys_pk, codigo, descripcion FROM divisa WHERE codigo=@code LIMIT 1;", prm)
+    }
+}
