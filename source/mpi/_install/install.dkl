@@ -23,11 +23,15 @@ program
 
     // Archivos de datos iniciales (Orden de instalación)
     init_files = '
+        cclaseproducto.csv,
+        cmetodosvaluacion.csv,
+        ctipoproducto.csv,
+        cfgimpuesto.csv,
+        linea.csv,
         sys_app_catalog.csv,
         sys_app_category.csv,
         sys_app_shortcut.csv,
-        divisa.csv,
-        gop_presupuesto_status.csv
+        divisa.csv
     '
 
     // =============== EJECUCIÓN DEL PROGRAMA

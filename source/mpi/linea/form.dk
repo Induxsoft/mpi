@@ -52,7 +52,7 @@ module "form.dk"
                 input(type="text" class="induxsoft-form-control mb-2" name="descripcion" value="#<@@(linea,'$descripcion')>")
 
                 small{$"Notas:"}
-                textarea(class="induxsoft-form-control mb-2"){$"#<@@(linea,'$notas')>"}
+                textarea(class="induxsoft-form-control mb-2" name="notas"){$"#<@@(linea,'$notas')>"}
             }
             div(id="status_bar" class="container-section")
             {

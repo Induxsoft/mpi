@@ -6,15 +6,16 @@ module "lib"
     {
         new def
         {
-            @"datatable*":dbr.list(db, "select id, const from ctipoproducto", @null)
+            @"datatable*": dbr.list(db, "select id, REPLACE(SUBSTR(IFNULL(const,''),2),'_',' ') const from ctipoproducto", @null)
             member "attributes"
             {
-                @"name":"itipo"
-                @"class":"induxsoft-form-select"
+                @"name": "itipo"
+                @"class": "induxsoft-form-select"
+                @"required": "true"
             }
-            @"text_field":"const"
-            @"value_field":"id"
-            @"selected":value
+            @"text_field": "const"
+            @"value_field": "id"
+            @"selected": value
         }
         return def
     }
@@ -22,15 +23,16 @@ module "lib"
     {
         new def
         {
-            @"datatable*":dbr.list(db, "select id, const from cmetodosvaluacion", @null)
+            @"datatable*": dbr.list(db, "select id, const from cmetodosvaluacion", @null)
             member "attributes"
             {
-                @"name":"metodovaluacion"
-                @"class":"induxsoft-form-select"
+                @"name": "metodovaluacion"
+                @"class": "induxsoft-form-select"
+                @"required": "true"
             }
-            @"text_field":"const"
-            @"value_field":"id"
-            @"selected":value
+            @"text_field": "const"
+            @"value_field": "id"
+            @"selected": value
         }
         return def
     }
@@ -38,21 +40,49 @@ module "lib"
     {
         new def
         {
-            @"datatable*":dbr.list(db, "select sys_pk, nombre from cfgimpuesto", @null)
+            @"datatable*": dbr.list(db, "select sys_pk, nombre from cfgimpuesto", @null)
             member "attributes"
             {
-                @"name":"impuestos"
-                @"class":"induxsoft-form-select"
+                @"name": "impuestos"
+                @"class": "induxsoft-form-select"
+                @"required": "true"
             }
-            @"text_field":"nombre"
-            @"value_field":"sys_pk"
-            @"selected":value
+            @"text_field": "nombre"
+            @"value_field": "sys_pk"
+            @"selected": value
         }
         return def
     }
-    function lib.get_divisa(&db,code)
+
+    function lib.get_divisa(&db, pk)
     {
-        new prm { @"code": code }
-        return dbr.rec(db, "SELECT sys_pk, codigo, descripcion FROM divisa WHERE codigo=@code LIMIT 1;", prm)
+        sql = "SELECT sys_pk, codigo, descripcion FROM divisa WHERE sys_pk=@pk LIMIT 1;"
+        return lib.get_data(db, sql, pk)
+    }
+    function lib.get_linea(&db, pk)
+    {
+        sql = "SELECT sys_pk, codigo, descripcion FROM linea WHERE sys_pk=@pk LIMIT 1;"
+        return lib.get_data(db, sql, pk)
+    }
+    function lib.get_departamento(&db, pk)
+    {
+        sql = "SELECT sys_pk, codigo, descripcion FROM departamento WHERE sys_pk=@pk LIMIT 1;"
+        return lib.get_data(db, sql, pk)
+    }
+    function lib.get_marca(&db, pk)
+    {
+        sql = "SELECT sys_pk, codigo, descripcion FROM marca WHERE sys_pk=@pk LIMIT 1;"
+        return lib.get_data(db, sql, pk)
+    }
+    function lib.get_proveedor(&db, pk)
+    {
+        sql = "SELECT sys_pk, codigo, nombre FROM proveedor WHERE sys_pk=@pk LIMIT 1;"
+        return lib.get_data(db, sql, pk)
+    }
+    function lib.get_data(&db, sql, pk)
+    {
+        new prm { @"pk": pk }
+        ref rec = dbr.rec(db, sql, prm)
+        return  ifnull(rec, record.create())
     }
 }

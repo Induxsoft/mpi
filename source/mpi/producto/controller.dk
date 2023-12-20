@@ -2,5 +2,31 @@
 #!
 module "controller"
 {
-    
+    switch @@(@http_context,"$request/get/_view")
+    {
+        case "divisa"
+        {
+            @table_name = "divisa"
+            point @list to mpi.obtenerDivisas
+            break
+        }
+        case "departamento"
+        {
+            @table_name = "departamento"
+            point @list to mpi.obtenerDepartamentos
+            break
+        }
+        case "marca"
+        {
+            @table_name = "marca"
+            point @list to mpi.obtenerMarcas
+            break
+        }
+        case "proveedor"
+        {
+            @table_name = "proveedor"
+            point @list to mpi.obtenerProveedores
+            break
+        }
+    }
 }

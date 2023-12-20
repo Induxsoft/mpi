@@ -4,14 +4,25 @@ model "presupuestos operativos"
 	#include "induxsoft.abstracts.ddm"
 
 	entity "cclaseproducto" : "EnumModel" {}
-	entity "cformacomisionproducto" : "EnumModel" {}
 	entity "ctipoproducto" : "EnumModel" {}
 	entity "cmetodosvaluacion" : "EnumModel" {}
-	entity "ctiposcomisionesproducto" : "EnumModel" {}
 	entity "ctasasiva" : "EnumModel" {}
 
-	entity "departamento" : "TableModel"
+	entity "departamento"
     {
+        @"sys_pk" int key required autoincrement
+        @"sys_guid" string(32) unique required
+        @"sys_dtcreated" datetime
+        @"sys_timestamp" datetime required
+        @"sys_info" string(32)
+        @"sys_user" string(32)
+        @"sys_lastuser" string(32)
+        @"sys_exported" bool
+        @"sys_dtexported" datetime
+        @"sys_recver" int
+        @"sys_deleted" bool
+        @"sys_lock" int
+
         @"codigo" string(5) unique required
         @"comision1" decimal(18,8)
         @"comision2" decimal(18,8)
@@ -20,43 +31,60 @@ model "presupuestos operativos"
         @"comision5" decimal(18,8)
         @"descripcion" string(50) unique required
     }
-	entity "divisa" : "TableModel"
+	
+	entity "marca"
     {
-        @"codigo" string(5) unique required
-        @"descripcion" string(30) unique required
-        @"tcambio" decimal(18,8)
-    }
-	entity "marca" : "TableModel"
-    {
+        @"sys_pk" int key required autoincrement
+        @"sys_guid" string(32) unique required
+        @"sys_dtcreated" datetime
+        @"sys_timestamp" datetime required
+        @"sys_info" string(32)
+        @"sys_user" string(32)
+        @"sys_lastuser" string(32)
+        @"sys_exported" bool
+        @"sys_dtexported" datetime
+        @"sys_recver" int
+        @"sys_deleted" bool
+        @"sys_lock" int
+
         @"codigo" string(5) unique required
         @"descripcion" string(50) unique required
     }
-	entity "cfgimpuesto" : "TableModel"
+	
+	entity "tipoproveedor"
     {
-        @"i1compra" string(4096)
-        @"i1venta" string(4096)
-        @"i2compra" string(4096)
-        @"i2venta" string(4096)
-        @"i3compra" string(4096)
-        @"i3venta" string(4096)
-        @"i4compra" string(4096)
-        @"i4venta" string(4096)
-        @"nombre" string(25) unique required
-        @"uf_tipoi1" string(25)
-        @"uf_tipoi2" string(25)
-        @"uf_tipoi3" string(25)
-        @"uf_tipoi4" string(25)
-        @"tasa" bool
-        @"objetoimp" string(2)
-    }
-	entity "tipoproveedor" : "TableModel"
-    {
+        @"sys_pk" int key required autoincrement
+        @"sys_guid" string(32) unique required
+        @"sys_dtcreated" datetime
+        @"sys_timestamp" datetime required
+        @"sys_info" string(32)
+        @"sys_user" string(32)
+        @"sys_lastuser" string(32)
+        @"sys_exported" bool
+        @"sys_dtexported" datetime
+        @"sys_recver" int
+        @"sys_deleted" bool
+        @"sys_lock" int
+
         @"codigo" string(15) unique required
         @"descripcion" string(50) unique required
         @"notas" string(4096) 
     }
-	entity "proveedor" : "TableModel"
+	entity "proveedor"
     {
+        @"sys_pk" int key required autoincrement
+        @"sys_guid" string(32) unique required
+        @"sys_dtcreated" datetime
+        @"sys_timestamp" datetime required
+        @"sys_info" string(32)
+        @"sys_user" string(32)
+        @"sys_lastuser" string(32)
+        @"sys_exported" bool
+        @"sys_dtexported" datetime
+        @"sys_recver" int
+        @"sys_deleted" bool
+        @"sys_lock" int
+
         @"codcuenta" string(50) unique
         @"codigo" string(35) unique required
         @"curp" string(35) unique
@@ -69,38 +97,13 @@ model "presupuestos operativos"
         @"notas" string(32000)
         @"rfc" string(15)
         @"saldo" decimal(18,8)
-        @"tasaiva" int ref:"ctasasiva" ["id"] required
+        @"tasaiva" ref:"ctasasiva" required
         @"telefonos" string(50)
         @"website" string(150)
         @"idivisa" ref:"divisa" required
         @"tipo" ref:"tipoproveedor" required
         @"uf_sys_baja" bool
         @"uf_vueltaviajero" int
-		//@"status" int ref:"cstatusorg" ["id"]
-		// @"izona" ref:"zona"
-        // @"uf_tipoop" ref:"tipooperacion"
-		// @"contacto1" ref:"contacto"
-        // @"contacto2" ref:"contacto"
-        // @"contacto3" ref:"contacto"
-        // @"domicilio1" ref:"domicilio"
-        // @"domicilio2" ref:"domicilio"
-        // @"domicilio3" ref:"domicilio"
-    }
-
-	entity "linea" : "TableModel"
-    {
-        @"clase" int ref:"cclaseproducto" ["id"] required
-        @"codigo" string(15) unique required
-        @"color" int
-        @"comision1" decimal(18,8)
-        @"comision2" decimal(18,8)
-        @"comision3" decimal(18,8)
-        @"comision4" decimal(18,8)
-        @"comision5" decimal(18,8)
-        @"descripcion" string(50) unique required
-        @"notas" string(4096)
-        @"visible" bool
-        @"uf_indicaciones" string(4096)
     }
 
 	entity "producto" : "TableModel"
@@ -139,7 +142,6 @@ model "presupuestos operativos"
         @"factore" decimal(18,8)
         @"flaglimites" bool
         @"flagutilidad" bool
-        @"formacomision" ref:"cformacomisionproducto"
         @"iclase" ref:"cclaseproducto" required
         @"itipo" ref:"ctipoproducto" required
         @"lim2" decimal(18,8)
@@ -165,7 +167,6 @@ model "presupuestos operativos"
         @"reqlote" bool required
         @"reqserie" bool required
         @"saldo" decimal(18,8)
-        @"tipocomision" ref:"ctiposcomisionesproducto"
         @"unidad" string(10) required
         @"unidadb" string(10)
         @"unidadc" string(10)
@@ -232,5 +233,74 @@ model "presupuestos operativos"
         @"uf_fechainhabilitacion" datetime
         @"uf_sat_proser" string(50) required
         @"uf_sat_uniproser" string(50) required
+    }
+
+    entity "divisa" : "TableModel"
+    {
+        @"codigo" string(5) unique required
+        @"descripcion" string(30) unique required
+        @"tcambio" decimal(18,8)
+    }
+
+    entity "linea": "TableModel"
+    {
+        @"clase" ref:"cclaseproducto" required
+        @"codigo" string(15) unique required
+        @"color" int
+        @"comision1" decimal(18,8)
+        @"comision2" decimal(18,8)
+        @"comision3" decimal(18,8)
+        @"comision4" decimal(18,8)
+        @"comision5" decimal(18,8)
+        @"descripcion" string(50) unique required
+        @"notas" string(4096)
+        @"visible" bool
+        @"uf_indicaciones" string(4096)
+    }
+
+    entity "cfgimpuesto" : "TableModel"
+    {
+        @"i1compra" string(4096)
+        @"i1venta" string(4096)
+        @"i2compra" string(4096)
+        @"i2venta" string(4096)
+        @"i3compra" string(4096)
+        @"i3venta" string(4096)
+        @"i4compra" string(4096)
+        @"i4venta" string(4096)
+        @"nombre" string(25) unique required
+        @"uf_tipoi1" string(25)
+        @"uf_tipoi2" string(25)
+        @"uf_tipoi3" string(25)
+        @"uf_tipoi4" string(25)
+        @"tasa" bool
+        @"objetoimp" string(2)
+    }
+
+    // Información de la aplicación
+    entity "sys_app_catalog"
+    {
+        @"pack_id" string(32) required
+        @"app_id" string(32) key
+        @"app_title" string(255)
+        @"created" datetime required
+        @"app_info" mmemo
+    }
+    // Categoria de la aplicación
+    entity "sys_app_category"
+    {
+        @"id" string(32) key
+        @"title" string(255) required
+    }
+    // Recursos de la aplicación
+    entity "sys_app_shortcut" 
+    {
+        @"id" string(32) key
+        @"title" string(255) required
+        @"icon96x96" string(1024) required
+        @"src" string(1024) required
+        @"_blank" bool
+        @"appid" ref : "sys_app_catalog"
+        @"cat" ref :"sys_app_category"
     }
 }

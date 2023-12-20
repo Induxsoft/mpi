@@ -2,6 +2,10 @@
 #!
 module "config"
 {
+    // _STATIC
+    @JS_MAIN = "/$/mpi/js/main.js"
+    @JS_PRODUCTO = "/$/mpi/js/producto.js"
+
     // _PACKAGE
     @MPI_PRODUCTO = "/!/mpi/producto/"
     @MPI_LINEA = "/!/mpi/linea/"
@@ -10,10 +14,10 @@ module "config"
     @MPI_ADD_EDIT_LINEA = "/!/mpi/linea/@id/"
 
     @MPI_SEARCH_LINEA = "/!/mpi/linea/?s=@search"
-    @MPI_SEARCH_DIVISA  = "/!/mpi/producto/?view=divisa&s=@search"
-    @MPI_SEARCH_DEPARTAMENTO  = "/!/mpi/producto/?view=departamento&s=@search"
-    @MPI_SEARCH_MARCA  = "/!/mpi/producto/?view=marca&s=@search"
-    @MPI_SEARCH_PROVEEDOR  = "/!/mpi/producto/?view=proveedor&s=@search"
+    @MPI_SEARCH_DIVISA  = "/!/mpi/producto/?_view=divisa&s=@search"
+    @MPI_SEARCH_DEPARTAMENTO  = "/!/mpi/producto/?_view=departamento&s=@search"
+    @MPI_SEARCH_MARCA  = "/!/mpi/producto/?_view=marca&s=@search"
+    @MPI_SEARCH_PROVEEDOR  = "/!/mpi/producto/?_view=proveedor&s=@search"
 
     new @icons
     {
