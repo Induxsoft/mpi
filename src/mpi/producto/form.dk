@@ -276,10 +276,18 @@ module "form.dk"
                     {
                         div(class="border-bottom py-4")
                         {
+                            ##
+                            uf_sat_proser = trim(@@(producto,'$uf_sat_proser'))
+                            uf_sat_uniproser = trim(@@(producto,'$uf_sat_uniproser'))
+
+                            if uf_sat_proser == "" { uf_sat_proser = "01010101" }
+                            if uf_sat_uniproser == "" { uf_sat_uniproser = "H87" }
+                            ##
+
                             small{$"Producto y/o servicio del SAT:"}
-                            input(type="text" class="induxsoft-form-control mb-2" name="uf_sat_proser" value="#<@@(producto,'$uf_sat_proser')>" required="true")
+                            input(type="text" class="induxsoft-form-control mb-2" name="uf_sat_proser" value="#<uf_sat_proser>" required="true")
                             small{$"Unidad del producto y/o servicio del SAT:"}
-                            input(type="text" class="induxsoft-form-control mb-2" name="uf_sat_uniproser" value="#<@@(producto,'$uf_sat_uniproser')>" required="true")
+                            input(type="text" class="induxsoft-form-control mb-2" name="uf_sat_uniproser" value="#<uf_sat_uniproser>" required="true")
                         }
                     }
                 }

@@ -11,7 +11,8 @@ module "model"
             IFNULL(codbar3,'') codbar3, IFNULL(reqserie,0) reqserie, IFNULL(reqlote,0) reqlote, IFNULL(unidadc,'') unidadc,
             IFNULL(factorc,0) factorc, IFNULL(unidadd,'') unidadd, IFNULL(factord,0) factord, IFNULL(unidade,'') unidade,
             IFNULL(factore,0) factore, IFNULL(maximo,0) maximo, IFNULL(puntoro,0) puntoro, IFNULL(minimo,0) minimo,
-            IFNULL(diasentrega,0) diasentrega, IFNULL(notas,'') notas, uf_sat_proser, uf_sat_uniproser
+            IFNULL(diasentrega,0) diasentrega, IFNULL(notas,'') notas, IFNULL(uf_sat_proser,'01010101') uf_sat_proser,
+            IFNULL(uf_sat_uniproser,'H87') uf_sat_uniproser
         FROM producto
         WHERE sys_pk=@_entity_id LIMIT 1;
     "
@@ -30,11 +31,16 @@ module "model"
     function mpi.crearProducto(&db, &params, &data)
     {
         @table_name = "producto"
+        if field.exist(data,"codbar1") && trim(@@(data,"$codbar1")) == "" { data<"codbar1*"> : @null }
+        if field.exist(data,"codbar2") && trim(@@(data,"$codbar2")) == "" { data<"codbar2*"> : @null }
+        if field.exist(data,"codbar3") && trim(@@(data,"$codbar3")) == "" { data<"codbar3*"> : @null }
         if field.exist(data,"idepartamento") && trim(@@(data,"$idepartamento")) == "" { data<"idepartamento*">:@null }
         if field.exist(data,"imarca") && trim(@@(data,"$imarca")) == "" { data<"imarca*">:@null }
         if field.exist(data,"proveedor1") && trim(@@(data,"$proveedor1")) == "" { data<"proveedor1*">:@null }
         if field.exist(data,"proveedor2") && trim(@@(data,"$proveedor2")) == "" { data<"proveedor2*">:@null }
         if field.exist(data,"proveedor3") && trim(@@(data,"$proveedor3")) == "" { data<"proveedor3*">:@null }
+        if field.exist(data,"uf_sat_proser") && trim(@@(data,"$uf_sat_proser")) == "" { data<"uf_sat_proser"> : "01010101" }
+        if field.exist(data,"uf_sat_uniproser") && trim(@@(data,"$uf_sat_uniproser")) == "" { data<"uf_sat_uniproser"> : "H87" }
 
         do entity.create(db, params, data)
     }
