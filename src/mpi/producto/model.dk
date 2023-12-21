@@ -41,6 +41,8 @@ module "model"
         if field.exist(data,"proveedor3") && trim(@@(data,"$proveedor3")) == "" { data<"proveedor3*">:@null }
         if field.exist(data,"uf_sat_proser") && trim(@@(data,"$uf_sat_proser")) == "" { data<"uf_sat_proser"> : "01010101" }
         if field.exist(data,"uf_sat_uniproser") && trim(@@(data,"$uf_sat_uniproser")) == "" { data<"uf_sat_uniproser"> : "H87" }
+        
+        if @@(params,"$_entity_id") == "_new" { data<"existencia"> : 0 }
 
         do entity.create(db, params, data)
     }
