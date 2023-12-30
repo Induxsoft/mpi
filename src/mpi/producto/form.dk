@@ -31,7 +31,7 @@ module "form.dk"
     {
         div(method="POST" action="#<formActn>" id="form")
         {
-            div(id="main_bar" class="row container-section m-0 px-0 py-2 border-bottom")
+            div(id="main_bar" class="row container-section my-2 px-0 py-2 border-bottom")
             {
                 div(class="col-4 d-flex align-items-center p-0")
                 {
@@ -39,6 +39,7 @@ module "form.dk"
                 }
                 div(class="col-8 d-flex align-items-center justify-content-end p-0 gap-2")
                 {
+                    a(href="./" class="btn btn-sm border-secondary induxsoft-corners btn-main-action" title="Refrescar"){$"#<@@(@icons,'ARROW_CLOCKWISE')>"}
                     button(type="submit" class="btn btn-sm border-secondary induxsoft-corners btn-main-action" id="btn_submit"){
                         $'#<@@(@icons,"save")>'
                     }

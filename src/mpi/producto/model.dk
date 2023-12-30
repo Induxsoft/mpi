@@ -2,6 +2,7 @@
 #!
 module "model"
 {
+    #include "../config.dk"
     @table_name = "producto"
     @read_query = "
         SELECT IFNULL(idivisa,'') idivisa, IFNULL(ilinea,'') ilinea, IFNULL(idepartamento,'') idepartamento, IFNULL(imarca,'') imarca,
@@ -15,17 +16,6 @@ module "model"
             IFNULL(uf_sat_uniproser,'H87') uf_sat_uniproser
         FROM producto
         WHERE sys_pk=@_entity_id LIMIT 1;
-    "
-    @list_query = "
-        SELECT p.sys_pk, p.codigo, p.descripcion, IFNULL(m.descripcion,'') marca, p.unidad, IFNULL(p.existencia,0) existencia,
-            IFNULL(p.saldo,0) saldo, IFNULL(p.costoultimo,0) costoultimo, REPLACE(SUBSTR(IFNULL(cc.const,''),2),'_',' ') clase,
-            d.descripcion divisa, l.descripcion linea
-        FROM producto p
-            LEFT JOIN marca m ON p.imarca = m.sys_pk
-            INNER JOIN cclaseproducto cc ON p.iclase = cc.id
-            INNER JOIN divisa d ON p.idivisa = d.sys_pk
-            INNER JOIN linea l ON p.ilinea = l.sys_pk
-        WHERE IF(IFNULL(@s,'')='', true, (p.codigo LIKE CONCAT('%',@s,'%') OR p.descripcion LIKE CONCAT('%',@s,'%')));
     "
 
     function mpi.crearProducto(&db, &params, &data)
@@ -76,6 +66,25 @@ module "model"
         ", params)
     }
 
+    function list(&db, &params)
+    {
+        query = "
+            SELECT p.sys_pk, p.codigo, p.descripcion, IFNULL(m.descripcion,'') marca, p.unidad, IFNULL(p.existencia,0) existencia,
+                IFNULL(p.saldo,0) saldo, IFNULL(p.costoultimo,0) costoultimo, REPLACE(SUBSTR(IFNULL(cc.const,''),2),'_',' ') clase,
+                d.descripcion divisa, l.descripcion linea
+            FROM producto p
+                LEFT JOIN marca m ON p.imarca = m.sys_pk
+                INNER JOIN cclaseproducto cc ON p.iclase = cc.id
+                INNER JOIN divisa d ON p.idivisa = d.sys_pk
+                INNER JOIN linea l ON p.ilinea = l.sys_pk
+            WHERE IF(IFNULL(@s,'')='', true, (p.codigo LIKE CONCAT('%',@s,'%') OR p.descripcion LIKE CONCAT('%',@s,'%')))
+            ORDER BY codigo
+            LIMIT #<@default_max_rows>;
+        "
+        return dbr.list(db, ftext(query), params)
+    }
+
     point @create to mpi.crearProducto
     point @update to mpi.crearProducto
+    point @list to list
 }
