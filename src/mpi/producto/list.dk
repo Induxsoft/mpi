@@ -5,9 +5,11 @@ module "list.dk"
     #include "functions.dkh"
     #include "serialize.dkh"
     #include "../config.dk"
+    #include "../_lib/scape_special_charactes2.dk"
 
     do @context.begin(@crud_context)
     ref productos = @('&.')
+    do scape_special_charactes(productos,"codigo,descripcion")
     
     #$ div(class="container p-0")
     {
