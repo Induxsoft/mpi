@@ -83,78 +83,120 @@ module "form.dk"
                     {
                         div(class="border-bottom py-4")
                         {
-                            small{$"Código:"}
-                            input(type="text" class="induxsoft-form-control mb-2" name="codigo" value="#<@@(producto,'$codigo')>" required="true")
-                            small{$"Descripción:"}
-                            input(type="text" class="induxsoft-form-control mb-2" name="descripcion" value="#<@@(producto,'$descripcion')>" required="true")
-                            small{$"Línea:"}
-                            "input-key"(id="ik_linea" name="ilinea" "data-value"='#<to.json(linea)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_LINEA>" columns="codigo,descripcion" colcaptions="Código,Descripción" "box-title-text"="Seleccione una línea" "box-placeholder-text"="Buscar línea" "box-nodata-text"="No se encontraron líneas" required="true"){$""}
-                            small{$"Tipo:"}
-                            #! do uie.dbSelect(lib.def_tipos_producto(database, @@(producto,'itipo')))
-                            #$ small{$"Moneda:"}
-                            "input-key"(id="ik_divisa" name="idivisa" "data-value"='#<to.json(divsa)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_DIVISA>" columns="codigo,descripcion" colcaptions="Código,Descripción" "box-title-text"="Seleccione una moneda" "box-placeholder-text"="Buscar moneda" "box-nodata-text"="No se encontraron monedas" required="true"){$""}
-                        }
-                        div(class="border-bottom py-4")
-                        {
-                            div(class="d-flex gap-2 align-items-center mb-2")
+                            div(class="row mb-2")
                             {
-                                div
+                                div(class="col-sm-2")
                                 {
-                                    small{$"Unidad estandar:"}
-                                    div(class="d-flex gap-2 align-items-center")
+                                    small(class="fw-bold"){$"Código:"}
+                                    input(type="text" class="induxsoft-form-control" name="codigo" value="#<@@(producto,'$codigo')>" required="true")
+                                }
+                                div(class="col-sm-10")
+                                {
+                                    small(class="fw-bold"){$"Descripción:"}
+                                    input(type="text" class="induxsoft-form-control" name="descripcion" value="#<@@(producto,'$descripcion')>" required="true")
+                                }
+                            }
+                            div(class="row mb-2")
+                            {
+                                div(class="col-sm-6")
+                                {
+                                    small(class="fw-bold"){$"Línea:"}
+                                    "input-key"(id="ik_linea" name="ilinea" "data-value"='#<to.json(linea)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_LINEA>" columns="codigo,descripcion" colcaptions="Código,Descripción" "box-title-text"="Seleccione una línea" "box-placeholder-text"="Buscar línea" "box-nodata-text"="No se encontraron líneas" required="true"){$""}
+                                }
+                                div(class="col-sm-4")
+                                {
+                                    small(class="fw-bold"){$"Tipo:"}
+                                    #! do uie.dbSelect(lib.def_tipos_producto(database, @@(producto,'itipo')))
+                                }
+                            }
+                            #$ div(class="row mb-2")
+                            {
+                                div(class="col-sm-6")
+                                {
+                                    small(class="fw-bold"){$"Moneda:"}
+                                    "input-key"(id="ik_divisa" name="idivisa" "data-value"='#<to.json(divsa)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_DIVISA>" columns="codigo,descripcion" colcaptions="Código,Descripción" "box-title-text"="Seleccione una moneda" "box-placeholder-text"="Buscar moneda" "box-nodata-text"="No se encontraron monedas" required="true"){$""}
+                                }
+                            }
+                        }
+                        div(class="border-bottom py-4 row")
+                        {
+                            div(class="col-sm-6")
+                            {
+                                div(class="d-flex gap-2 align-items-center mb-2")
+                                {
+                                    div
                                     {
-                                        input(type="text" class="induxsoft-form-control" name="unidad" value="#<field.dstr(producto,'unidad','PZA')>" required="true")
-                                        p(class="m-0"){$"x"}
+                                        small(class="fw-bold"){$"Unidad estandar:"}
+                                        div(class="d-flex gap-2 align-items-center")
+                                        {
+                                            input(type="text" class="induxsoft-form-control" name="unidad" value="#<field.dstr(producto,'unidad','PZA')>" required="true")
+                                            p(class="m-0"){$"x"}
+                                        }
+                                    }
+                                    div
+                                    {
+                                        small{$"Factor:"}
+                                        div(class="d-flex gap-2 align-items-center")
+                                        {
+                                            input(type="number" class="induxsoft-form-control" name="factorb" value="#<field.dnum(producto,'factorb',1)>")
+                                            p(class="m-0"){$"="}
+                                        }
+                                    }
+                                    div
+                                    {
+                                        small{$"Unidad de compra:"}
+                                        input(type="text" class="induxsoft-form-control" name="unidadB" value="#<field.dstr(producto,'unidadB','PZA')>")
                                     }
                                 }
-                                div
+                                div(class="d-flex justify-content-center")
                                 {
-                                    small{$"Factor:"}
-                                    div(class="d-flex gap-2 align-items-center")
+                                    small(id="mesage_factor"){$""}
+                                }
+                            }
+                            div(class="col-sm-6")
+                            {
+                                div(class="d-flex gap-2 align-items-center")
+                                {
+                                    div
                                     {
-                                        input(type="number" class="induxsoft-form-control" name="factorb" value="#<field.dnum(producto,'factorb',1)>")
-                                        p(class="m-0"){$"="}
+                                        small(class="fw-bold"){$"Método de valuación:"}
+                                        #! do uie.dbSelect(lib.def_metodo_valuacion(database, @@(producto,'metodovaluacion')))
+                                    }
+                                    #$ div
+                                    {
+                                        small(class="fw-bold"){$"Impuestos:"}
+                                        #! do uie.dbSelect(lib.def_impuestos(database, @@(producto,'impuestos')))
                                     }
                                 }
-                                div
-                                {
-                                    small{$"Unidad de compra:"}
-                                    input(type="text" class="induxsoft-form-control" name="unidadB" value="#<field.dstr(producto,'unidadB','PZA')>")
-                                }
-                            }
-                            div(class="d-flex justify-content-center")
-                            {
-                                small(id="mesage_factor"){$""}
-                            }
-                            div(class="d-flex gap-2 align-items-center")
-                            {
-                                div
-                                {
-                                    small{$"Método de valuación:"}
-                                    #! do uie.dbSelect(lib.def_metodo_valuacion(database, @@(producto,'metodovaluacion')))
-                                }
-                                #$ div
-                                {
-                                    small{$"Impuestos:"}
-                                    #! do uie.dbSelect(lib.def_impuestos(database, @@(producto,'impuestos')))
-                                }
-                            }
+                            }                            
                         }
-                        #$ div(class="border-bottom py-4")
+                        #$ div(class="border-bottom py-4 row")
                         {
-                            small{$"Último costo:"}
-                            input(type="number" class="induxsoft-form-control mb-2" name="costoultimo" value="#<@@(producto,'#costoultimo')>")
+                            div(class="col-sm-2")
+                            {
+                                small{$"Último costo:"}
+                                input(type="number" class="induxsoft-form-control mb-2" name="costoultimo" value="#<@@(producto,'#costoultimo')>")
+                            }
                         }
-                        div(class="border-bottom py-4")
+                        div(class="border-bottom py-4 row")
                         {
-                            small{$"Código de barras 1:"}
-                            input(type="text" class="induxsoft-form-control mb-2" name="codbar1" value="#<@@(producto,'$codbar1')>")
-                            small{$"Código de barras 2:"}
-                            input(type="text" class="induxsoft-form-control mb-2" name="codbar2" value="#<@@(producto,'$codbar2')>")
-                            small{$"Código de barras 3:"}
-                            input(type="text" class="induxsoft-form-control mb-2" name="codbar3" value="#<@@(producto,'$codbar3')>")
+                            div(class="col-sm-4")
+                            {
+                                small{$"Código de barras 1:"}
+                                input(type="text" class="induxsoft-form-control mb-2" name="codbar1" value="#<@@(producto,'$codbar1')>")
+                            }
+                            div(class="col-sm-4")
+                            {
+                                small{$"Código de barras 2:"}
+                                input(type="text" class="induxsoft-form-control mb-2" name="codbar2" value="#<@@(producto,'$codbar2')>")
+                            }
+                            div(class="col-sm-4")
+                            {
+                                small{$"Código de barras 3:"}
+                                input(type="text" class="induxsoft-form-control mb-2" name="codbar3" value="#<@@(producto,'$codbar3')>")
+                            }
                         }
-                        div(class="border-bottom pt-4 pb-5")
+                        div(class="pt-4 pb-5")
                         {
                             div(class="d-flex gap-4")
                             {
@@ -176,98 +218,117 @@ module "form.dk"
 
                     div(class="tab-pane fade" id="control" role="tabpanel" "aria-labelledby"="control-tab")
                     {
-                        div(class="border-bottom py-4")
+                        div(class="border-bottom py-4 row")
                         {
-                            small{$"Departamento:"}
-                            "input-key"(id="ik_departamento" name="idepartamento" "data-value"='#<to.json(depar)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_DEPARTAMENTO>" columns="codigo,descripcion" colcaptions="Código,Descripción" "box-title-text"="Seleccione un departamento" "box-placeholder-text"="Buscar departamento" "box-nodata-text"="No se encontraron departamentos"){$""}
-                            small{$"Marca:"}
-                            "input-key"(id="ik_marca" name="imarca" "data-value"='#<to.json(marca)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_MARCA>" columns="codigo,descripcion" colcaptions="Código,Descripción" "box-title-text"="Seleccione una marca" "box-placeholder-text"="Buscar marca" "box-nodata-text"="No se encontraron marcas"){$""}
-                        }
-                        div(class="border-bottom py-4")
-                        {
-                            div(class="d-flex gap-2")
+                            div(class="col-sm-6")
                             {
-                                div
-                                {
-                                    small{$"Unidad:"}
-                                    input(type="text" class="induxsoft-form-control mb-2" name="unidadc" value="#<@@(producto,'$unidadc')>")
-                                }
-                                div
-                                {
-                                    small{$"Factor:"}
-                                    input(type="number" class="induxsoft-form-control mb-2" name="factorc" value="#<@@(producto,'#factorc')>")
-                                }
+                                small{$"Departamento:"}
+                                "input-key"(id="ik_departamento" name="idepartamento" "data-value"='#<to.json(depar)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_DEPARTAMENTO>" columns="codigo,descripcion" colcaptions="Código,Descripción" "box-title-text"="Seleccione un departamento" "box-placeholder-text"="Buscar departamento" "box-nodata-text"="No se encontraron departamentos"){$""}
                             }
-                            div(class="d-flex gap-2")
+                            div(class="col-sm-6")
                             {
-                                div
-                                {
-                                    small{$"Unidad:"}
-                                    input(type="text" class="induxsoft-form-control mb-2" name="unidadd" value="#<@@(producto,'$unidadd')>")
-                                }
-                                div
-                                {
-                                    small{$"Factor:"}
-                                    input(type="number" class="induxsoft-form-control mb-2" name="factord" value="#<@@(producto,'#factord')>")
-                                }
-                            }
-                            div(class="d-flex gap-2")
-                            {
-                                div
-                                {
-                                    small{$"Unidad:"}
-                                    input(type="text" class="induxsoft-form-control mb-2" name="unidade" value="#<@@(producto,'$unidade')>")
-                                }
-                                div
-                                {
-                                    small{$"Factor:"}
-                                    input(type="number" class="induxsoft-form-control mb-2" name="factore" value="#<@@(producto,'#factore')>")
-                                }
+                                small{$"Marca:"}
+                                "input-key"(id="ik_marca" name="imarca" "data-value"='#<to.json(marca)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="descripcion" "data-source"="#<@MPI_SEARCH_MARCA>" columns="codigo,descripcion" colcaptions="Código,Descripción" "box-title-text"="Seleccione una marca" "box-placeholder-text"="Buscar marca" "box-nodata-text"="No se encontraron marcas"){$""}
                             }
                         }
-                        div(class="border-bottom py-4")
+                        div(class="border-bottom py-4 row")
                         {
-                            div(class="d-flex gap-2")
+                            div(class="col-sm-6")
                             {
-                                div
+                                div(class="d-flex gap-2")
                                 {
-                                    small{$"Máximo:"}
-                                    input(type="number" class="induxsoft-form-control mb-2" name="maximo" value="#<@@(producto,'#maximo')>")
+                                    div(class="flex-grow-1")
+                                    {
+                                        small{$"Unidad:"}
+                                        input(type="text" class="induxsoft-form-control mb-2" name="unidadc" value="#<@@(producto,'$unidadc')>")
+                                    }
+                                    div(class="flex-grow-1")
+                                    {
+                                        small{$"Factor:"}
+                                        input(type="number" class="induxsoft-form-control mb-2" name="factorc" value="#<@@(producto,'#factorc')>")
+                                    }
                                 }
-                                div
+                                div(class="d-flex gap-2")
                                 {
-                                    small{$"Punto de reorden:"}
-                                    input(type="number" class="induxsoft-form-control mb-2" name="puntoro" value="#<@@(producto,'#puntoro')>")
+                                    div(class="flex-grow-1")
+                                    {
+                                        small{$"Unidad:"}
+                                        input(type="text" class="induxsoft-form-control mb-2" name="unidadd" value="#<@@(producto,'$unidadd')>")
+                                    }
+                                    div(class="flex-grow-1")
+                                    {
+                                        small{$"Factor:"}
+                                        input(type="number" class="induxsoft-form-control mb-2" name="factord" value="#<@@(producto,'#factord')>")
+                                    }
+                                }
+                                div(class="d-flex gap-2")
+                                {
+                                    div(class="flex-grow-1")
+                                    {
+                                        small{$"Unidad:"}
+                                        input(type="text" class="induxsoft-form-control mb-2" name="unidade" value="#<@@(producto,'$unidade')>")
+                                    }
+                                    div(class="flex-grow-1")
+                                    {
+                                        small{$"Factor:"}
+                                        input(type="number" class="induxsoft-form-control mb-2" name="factore" value="#<@@(producto,'#factore')>")
+                                    }
                                 }
                             }
-                            div(class="d-flex gap-2")
+                            div(class="col-sm-6")
                             {
-                                div
+                                div(class="d-flex gap-2")
                                 {
-                                    small{$"Mínimo:"}
-                                    input(type="number" class="induxsoft-form-control mb-2" name="minimo" value="#<@@(producto,'#minimo')>")   
+                                    div
+                                    {
+                                        small{$"Máximo:"}
+                                        input(type="number" class="induxsoft-form-control mb-2" name="maximo" value="#<@@(producto,'#maximo')>")
+                                    }
+                                    div
+                                    {
+                                        small{$"Punto de reorden:"}
+                                        input(type="number" class="induxsoft-form-control mb-2" name="puntoro" value="#<@@(producto,'#puntoro')>")
+                                    }
                                 }
-                                div
+                                div(class="d-flex gap-2")
                                 {
-                                    small{$"Punto de reorden:"}
-                                    input(type="number" class="induxsoft-form-control mb-2" name="diasentrega" value="#<@@(producto,'#diasentrega')>")
+                                    div
+                                    {
+                                        small{$"Mínimo:"}
+                                        input(type="number" class="induxsoft-form-control mb-2" name="minimo" value="#<@@(producto,'#minimo')>")   
+                                    }
+                                    div
+                                    {
+                                        small{$"Punto de reorden:"}
+                                        input(type="number" class="induxsoft-form-control mb-2" name="diasentrega" value="#<@@(producto,'#diasentrega')>")
+                                    }
                                 }
                             }
                         }
-                        div(class="border-bottom py-4")
+                        
+                        div(class="py-4 row")
                         {
-                            small{$"Proveedor 1:"}
-                            "input-key"(id="ik_proveedor1" name="proveedor1" "data-value"='#<to.json(prov1)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="nombre" "data-source"="#<@MPI_SEARCH_PROVEEDOR>" columns="codigo,nombre" colcaptions="Código,Nombre" "box-title-text"="Seleccione un proveedor" "box-placeholder-text"="Buscar proveedor" "box-nodata-text"="No se encontraron proveedores"){$""}
-                            small{$"Proveedor 2:"}
-                            "input-key"(id="ik_proveedor2" name="proveedor2" "data-value"='#<to.json(prov2)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="nombre" "data-source"="#<@MPI_SEARCH_PROVEEDOR>" columns="codigo,nombre" colcaptions="Código,Nombre" "box-title-text"="Seleccione un proveedor" "box-placeholder-text"="Buscar proveedor" "box-nodata-text"="No se encontraron proveedores"){$""}
-                            small{$"Proveedor 3:"}
-                            "input-key"(id="ik_proveedor3" name="proveedor3" "data-value"='#<to.json(prov3)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="nombre" "data-source"="#<@MPI_SEARCH_PROVEEDOR>" columns="codigo,nombre" colcaptions="Código,Nombre" "box-title-text"="Seleccione un proveedor" "box-placeholder-text"="Buscar proveedor" "box-nodata-text"="No se encontraron proveedores"){$""}
+                            div(class="col-sm-6")
+                            {
+                                small{$"Proveedor 1:"}
+                                "input-key"(id="ik_proveedor1" name="proveedor1" "data-value"='#<to.json(prov1)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="nombre" "data-source"="#<@MPI_SEARCH_PROVEEDOR>" columns="codigo,nombre" colcaptions="Código,Nombre" "box-title-text"="Seleccione un proveedor" "box-placeholder-text"="Buscar proveedor" "box-nodata-text"="No se encontraron proveedores"){$""}
+                            }
+                            div(class="col-sm-6")
+                            {
+                                small{$"Proveedor 2:"}
+                                "input-key"(id="ik_proveedor2" name="proveedor2" "data-value"='#<to.json(prov2)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="nombre" "data-source"="#<@MPI_SEARCH_PROVEEDOR>" columns="codigo,nombre" colcaptions="Código,Nombre" "box-title-text"="Seleccione un proveedor" "box-placeholder-text"="Buscar proveedor" "box-nodata-text"="No se encontraron proveedores"){$""}
+                            }
+                            div(class="col-sm-6")
+                            {
+                                small{$"Proveedor 3:"}
+                                "input-key"(id="ik_proveedor3" name="proveedor3" "data-value"='#<to.json(prov3)>' "data-key"="sys_pk" "data-search"="codigo" "data-text"="nombre" "data-source"="#<@MPI_SEARCH_PROVEEDOR>" columns="codigo,nombre" colcaptions="Código,Nombre" "box-title-text"="Seleccione un proveedor" "box-placeholder-text"="Buscar proveedor" "box-nodata-text"="No se encontraron proveedores"){$""}
+                            }
                         }
                     }
 
                     div(class="tab-pane fade" id="notes" role="tabpanel" "aria-labelledby"="notes-tab")
                     {
-                        div(class="border-bottom py-4")
+                        div(class="py-4")
                         {
                             small{$"Notas:"}
                             textarea(name="notas" class="induxsoft-form-control" rows="25"){$"#<@@(producto,'$notas')>"}
@@ -275,7 +336,7 @@ module "form.dk"
                     }
                     div(class="tab-pane fade" id="sat" role="tabpanel" "aria-labelledby"="sat-tab")
                     {
-                        div(class="border-bottom py-4")
+                        div(class="py-4")
                         {
                             ##
                             uf_sat_proser = trim(@@(producto,'$uf_sat_proser'))
@@ -285,9 +346,9 @@ module "form.dk"
                             if uf_sat_uniproser == "" { uf_sat_uniproser = "H87" }
                             ##
 
-                            small{$"Producto y/o servicio del SAT:"}
+                            small(class="fw-bold"){$"Producto y/o servicio del SAT:"}
                             input(type="text" class="induxsoft-form-control mb-2" name="uf_sat_proser" value="#<uf_sat_proser>" required="true")
-                            small{$"Unidad del producto y/o servicio del SAT:"}
+                            small(class="fw-bold"){$"Unidad del producto y/o servicio del SAT:"}
                             input(type="text" class="induxsoft-form-control mb-2" name="uf_sat_uniproser" value="#<uf_sat_uniproser>" required="true")
                         }
                     }
