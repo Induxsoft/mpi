@@ -39,9 +39,8 @@ module "form.dk"
             }
             div(id="work_area" class="container-section")
             {
-                #! if trim(errorMsg) != "" { #$ small{$"#<errorMsg>"} }
+                div(class="#<ifstr(@('error/message')!='','alert alert-danger','')>"){$"#<@('error/message')>"}
 
-                #$
                 input(type="hidden" name="sys_pk" value="#<@@(linea, '#sys_pk')>")
                 input(type="hidden" name="sys_recver" value="#<@@(linea, '#sys_recver')>")
                 input(type="hidden" name="clase" value="#<field.dnum(linea,'clase',1)>")

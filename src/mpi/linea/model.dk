@@ -3,6 +3,7 @@
 module "model"
 {
     #include "../config.dk"
+    #include "../_lib/lib.dk"
     @table_name = "linea"
 
     function list(&db, &params)
@@ -15,6 +16,34 @@ module "model"
             LIMIT #<@default_max_rows>;"
         return dbr.list(db, ftext(query), params)
     }
+    function create(&db, &params, &data)
+    {
+        do entity.create(db, params, data)
+        exception
+		{
+			do cu_error("línea")
+			do rise_error(last_error_code(), last_error())
+		}
+    }
+    function update(&db, &params, &data)
+    {
+        do entity.update(db, params, data)
+        exception
+		{
+			do cu_error("línea")
+			do rise_error(last_error_code(), last_error())
+		}
+    }
+    function cu_error(table)
+    {
+        new fields {
+            @"codigo": "El código"
+            @"descripcion": "La descripción"
+        }
+        do valide_duplicate(fields, table, last_error(), last_error_code())
+    }
 
     point @list to list
+    point @create to create
+    point @update to update
 }

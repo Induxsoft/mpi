@@ -52,7 +52,7 @@ module "form.dk"
             }
             div(id="work_area" class="container-section")
             {
-                #! if trim(errorMsg) != "" { #$ small{$"#<errorMsg>"} }
+                div(class="#<ifstr(@('error/message')!='','alert alert-danger','')>"){$"#<@('error/message')>"}
 
                 #$
                 input(type="hidden" name="sys_pk" value="#<@@(producto, '#sys_pk')>")
