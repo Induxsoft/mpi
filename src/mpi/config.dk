@@ -7,6 +7,7 @@ module "config"
     @JS_PRODUCTO = "/$/mpi/js/producto.js"
 
     // _PACKAGE
+    @BATCH_TASKMAN="/!/batch/taskman/"
     @MPI_PRODUCTO = "/!/mpi/producto/"
     @MPI_LINEA = "/!/mpi/linea/"
 

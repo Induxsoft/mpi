@@ -79,6 +79,7 @@ module "form.dk"
                 // PANEL TABS
                 div(class="tab-content" id="tabContent")
                 {
+                    // PANEL GENERAL
                     div(class="tab-pane fade show active" id="general" role="tabpanel" "aria-labelledby"="general-tab")
                     {
                         div(class="border-bottom py-4")
@@ -88,7 +89,7 @@ module "form.dk"
                                 div(class="col-sm-2")
                                 {
                                     small(class="fw-bold"){$"Código:"}
-                                    input(type="text" class="induxsoft-form-control" name="codigo" value="#<@@(producto,'$codigo')>" required="true")
+                                    input(type="text" class="induxsoft-form-control" name="codigo" value="#<@@(producto,'$codigo')>" placeholder="<A>")
                                 }
                                 div(class="col-sm-10")
                                 {
@@ -204,7 +205,7 @@ module "form.dk"
                                 {
                                     input(class="form-check-input induxsoft-corners" type="checkbox" id="check_req_ns" "#<ifstr(@@(producto,'#reqserie')==1,'checked','')>"="true")
                                     label(class="form-check-label" "for"="check_req_ns"){$"Requiere manejar número de serie"}
-                                    input(type="hidden" name="reqserie" id="ipt_reqserie" value="#<@@(producto,'#reqserie')>" required="true")
+                                    input(type="hidden" name="reqserie" id="ipt_reqserie" value="#<@@(producto,'#reqserie')>")
                                 }
                                 div(class="form-check")
                                 {

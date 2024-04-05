@@ -5,6 +5,8 @@ module "Controller configs"
 	#include "functions.dkh"
 	#include "serialize.dkh"
 	#include "dbr.dkh"
+	#include "dbr.vars.dkl"
+	#include "dbr.folios.dkl"
 	#include "crudl/crudl.dk"
 
 	if @@(@http_context,"$session/user/ids") == "" {

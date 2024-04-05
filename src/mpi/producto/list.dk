@@ -4,12 +4,17 @@ module "list.dk"
 {
     #include "functions.dkh"
     #include "serialize.dkh"
+    #include "dbr.dkh"
     #include "../config.dk"
+    #include "../_lib/icons.dk"
+    #include "../_lib/lib.dk"
     #include "../_lib/scape_special_charactes2.dk"
 
     do @context.begin(@crud_context)
     ref productos = @('&.')
     do scape_special_charactes(productos,"codigo,descripcion")
+
+    jg = dbr.num(@("&database"),"SELECT sys_pk FROM jobsgroup WHERE name = 'MPI'",@null)
     
     #$ div(class="container p-0")
     {
@@ -19,14 +24,33 @@ module "list.dk"
             {
                 h5(class="tex-no-break m-0"){$"Productos"}
             }
+
             div(class="col-8 d-flex align-items-center justify-content-end p-0 gap-2")
             {
-                a(href="#<replace(@MPI_ADD_EDIT_PRODUCTO, '@id', '_new')>" class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print"){$"Agregar"}
-                button(class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print" title="Imprimir" onclick="window.print()"){$"#<@@(@icons,'PRINTER')>"}
-                a(href="./" class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print" title="Refrescar"){$"#<@@(@icons,'ARROW_CLOCKWISE')>"}
-                a(href="/" target="_top" class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print" title="Salir"){$"#<@@(@icons,'X')>"}
+                if AppExist(@("&database"),"batch") {
+                    a(href="#<@BATCH_TASKMAN>#<jg>/importar.producto?exit_url_encode=#<url_encode(@MPI_PRODUCTO)>" class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print" title="Importar productos") {
+                        $"#<@ICON_FILE_CSV>"
+                    }
+                }
+
+                a(href="#<replace(@MPI_ADD_EDIT_PRODUCTO, '@id', '_new')>" class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print") {
+                    $"Agregar"
+                }
+
+                button(class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print" title="Imprimir" onclick="window.print()") {
+                    $"#<@ICON_PRINTER>"
+                }
+                
+                a(href="./" class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print" title="Refrescar") {
+                    $"#<@ICON_ARROW_CLOCKWISE>"
+                }
+                
+                a(href="/" target="_top" class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print" title="Salir") {
+                    $"#<@ICON_X_LG>"
+                }
             }
         }
+
         div(id="work_area" class="container-section pt-2")
         {
             form(action="./" method="GET" id="form_search" class="no-print my-1 d-flex py-1")
@@ -41,6 +65,7 @@ module "list.dk"
                     "class"="w-100"
                 ){$""}
             }
+
             div
             {
                 #! lenght = list.count(productos)
@@ -55,6 +80,7 @@ module "list.dk"
                         h6(style="background-color: #F5F5F5; padding: 10rem 0;"){"#<message>"}
                     }
                 }
+
                 #! else 
                 {
                     #$ div(style="overflow-y:auto;max-height: 75vh;" class="mb-2" id="list_table_container")
@@ -113,6 +139,7 @@ module "list.dk"
                 }
             }
         }
+
         div(id="status_bar" class="container-section")
         {
             $""

@@ -20,6 +20,24 @@ module "model"
         WHERE sys_pk=@_entity_id LIMIT 1;
     "
 
+    function check_autocode(&db,table,field,&data)
+    {
+        linea = @@(data, "ilinea")
+        query = "SELECT codigo FROM linea WHERE sys_pk = @ilinea"
+        var = dbr.str(db, query, data)
+        
+        varvalue = dbr.vars.getd(db,"FXCA043","|0000")
+        varvalue = replace(varvalue,"@Linea",var)
+        ref config = dbr.autocode.info(varvalue)
+        config<"start">: 2
+        new_code = dbr.autocode.new(db,table,field,config)
+
+        data<"codigo">: new_code
+
+        exception
+        { }
+    }
+
     function mpi.crearProducto(&db, &params, &data)
     {
         @table_name = "producto"
@@ -36,7 +54,10 @@ module "model"
         
         if @@(params,"$_entity_id") == "_new" { data<"existencia"> : 0 }
 
+        if @@(data,"codigo")=="" { do check_autocode(db,"producto","codigo",data) }
+        
         do entity.create(db, params, data)
+        
         exception
 		{
 			do cu_error("producto")

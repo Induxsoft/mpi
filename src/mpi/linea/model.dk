@@ -6,6 +6,18 @@ module "model"
     #include "../_lib/lib.dk"
     @table_name = "linea"
 
+    function check_autocode(&db,table,field,&data)
+    {
+        varvalue = dbr.vars.getd(db,"FXCA059","|0000")
+        ref config = dbr.autocode.info(varvalue)
+        new_code = dbr.autocode.new(db,table,field,config)
+
+        data<"codigo">: new_code
+
+        exception
+        { }
+    }
+
     function list(&db, &params)
     {
         query="SELECT sys_pk, clase, codigo, descripcion, IFNULL(notas,'') notas
@@ -16,15 +28,19 @@ module "model"
             LIMIT #<@default_max_rows>;"
         return dbr.list(db, ftext(query), params)
     }
+
     function create(&db, &params, &data)
     {
+        if @@(data,"codigo")=="" { do check_autocode(db,"linea","codigo",data) }
         do entity.create(db, params, data)
+        
         exception
 		{
 			do cu_error("línea")
 			do rise_error(last_error_code(), last_error())
 		}
     }
+
     function update(&db, &params, &data)
     {
         do entity.update(db, params, data)
@@ -34,6 +50,7 @@ module "model"
 			do rise_error(last_error_code(), last_error())
 		}
     }
+
     function cu_error(table)
     {
         new fields {
