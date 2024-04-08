@@ -31,8 +31,8 @@ program
     query6 = "SELECT id FROM cmetodosvaluacion WHERE const = @metodovaluacion"
     query7 = "
         INSERT INTO producto
-        (codigo, descripcion, ilinea, idivisa, iclase, itipo, unidad, reqlote, reqserie, metodovaluacion, impuestos, existencia, costoultimo, uf_sat_proser, uf_sat_uniproser, sys_guid, sys_dtcreated, sys_timestamp)
-        VALUES (@codigo, @descripcion, @ilinea, @idivisa, @iclase, @itipo, @unidad, @reqlote, @reqserie, @metodovaluacion, @impuestos, @existencia, @costoultimo, @uf_sat_proser, @uf_sat_uniproser, @sys_guid, @sys_dtcreated, @sys_timestamp)
+        (codigo, descripcion, ilinea, idivisa, iclase, itipo, unidad, reqlote, reqserie, metodovaluacion, impuestos, existencia, costoultimo, uf_sat_proser, uf_sat_uniproser, sys_guid, sys_dtcreated, sys_timestamp, sys_recver)
+        VALUES (@codigo, @descripcion, @ilinea, @idivisa, @iclase, @itipo, @unidad, @reqlote, @reqserie, @metodovaluacion, @impuestos, @existencia, @costoultimo, @uf_sat_proser, @uf_sat_uniproser, @sys_guid, @sys_dtcreated, @sys_timestamp, @sys_recver)
     "
     query8 = "
         UPDATE producto
@@ -124,11 +124,13 @@ program
                                                     itm<"sys_guid">: uuid()
                                                     itm<"sys_dtcreated*">: now()
                                                     itm<"sys_timestamp*">: now()
+                                                    itm<"sys_recver">: 0
                                                     itm<"iclase">: 1
                                                     itm<"existencia">: 0
                                                     itm<"costoultimo">: 0
                                                     itm<"uf_sat_proser">: "01010101"
                                                     itm<"uf_sat_uniproser">: "H87"
+
                                                     do dbr.execute(db,query7,itm)
                                                 }
                                             } else {
