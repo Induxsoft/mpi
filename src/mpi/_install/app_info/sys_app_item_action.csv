@@ -1,9 +1,9 @@
 "id","title","shorttitle","icon16x16","href","_blank","appid","itemtype","req_context_item_id","act_type"
 
-"CE11","Agregar materia prima","Agregar","","/!/mpi/producto/_new/","0","mpi.producto","mpi","0","action"
-"CE12","Editar materia prima","Editar","","/!/mpi/producto/@_src_context_item_id/","0","mpi.producto","mpi","1","action"
-"CE13","Eliminar materia prima","Eliminar","","javascript:InduxsoftCrudlModel.Delete(@_src_context_item_id);","0","mpi.producto","mpi","1","action"
+"CE11","Agregar materia prima","Agregar","","/!/mpi/producto/_new/","0","mpi.producto","DET02D","0","action"
+"CE12","Editar materia prima","Editar","","/!/mpi/producto/@_src_context_item_id/","0","mpi.producto","DET02D","1","action"
+"CE13","Eliminar materia prima","Eliminar","","javascript:InduxsoftCrudlModel.Delete(@_src_context_item_id);","0","mpi.producto","DET02D","1","action"
 
-"CE21","Agregar linea de materias primas","Agregar","","/!/mpi/linea/_new/","0","mpi.linea","lmp","0","action"
-"CE22","Editar linea de materias primas","Editar","","/!/mpi/linea/@_src_context_item_id/","0","mpi.linea","lmp","1","action"
-"CE23","Eliminar linea de materias primas","Eliminar","","javascript:InduxsoftCrudlModel.Delete(@_src_context_item_id);","0","mpi.linea","lmp","1","action"
+"CE21","Agregar linea de materias primas","Agregar","","/!/mpi/linea/_new/","0","mpi.linea","DET067","0","action"
+"CE22","Editar linea de materias primas","Editar","","/!/mpi/linea/@_src_context_item_id/","0","mpi.linea","DET067","1","action"
+"CE23","Eliminar linea de materias primas","Eliminar","","javascript:InduxsoftCrudlModel.Delete(@_src_context_item_id);","0","mpi.linea","DET067","1","action"
