@@ -5,6 +5,8 @@ module "list.dk"
     #include "functions.dkh"
     #include "serialize.dkh"
     #include "dbr.dkh"
+    #include "dbr.apps.dkl"
+    #include "uielements.v12.dkl"
     #include "../config.dk"
     #include "../_lib/icons.dk"
     #include "../_lib/lib.dk"
@@ -14,45 +16,42 @@ module "list.dk"
     ref productos = @('&.')
     do scape_special_charactes(productos,"codigo,descripcion")
 
-    jg = dbr.num(@("&database"),"SELECT sys_pk FROM jobsgroup WHERE name = 'MPI'",@null)
+    new nav_config
+    {
+        @"title": "Materias primas e insumos"
+        @"buttons*": @null
+        @"urlexit": "/"
+        @"main": "CE24,CE21,CE22,CE23"
+        @"actions*": dbr.apps.itemactions(@('&database'),"DET02D","action","",0)
+        @"reports*": dbr.apps.itemactions(@('&database'),"DET02D","report","",0)
+        @"jscurrentcontext": "getCurrentContext"
+    }
+
+    new table_definition
+    {
+        @"datatable*": productos
+        @"table_footer": "Mostrando los primeros # registros"
+        member @"columns"
+        {
+            member @"codigo" { @"caption":"Código" }
+            member @"descripcion" { @"caption":"Descripción" }
+            member @"marca" { @"caption": "Marca" }
+            member @"unidad" { @"caption": "Unidad" }
+            member @"existencia" { @"caption": "Existencia" }
+            member @"saldo" { @"caption": "Saldo" }
+            member @"costoultimo" { @"caption": "Costo último" }
+            member @"clase" { @"caption": "Clase" }
+            member @"divisa" { @"caption": "Divisa" }
+        }
+    }
     
     #$ div(class="container p-0")
     {
-        div(id="main_bar" class="row container-section my-2 px-0 py-2 border-bottom")
-        {
-            div(class="col-4 d-flex align-items-center p-0")
-            {
-                h5(class="tex-no-break m-0"){$"Productos"}
-            }
-
-            div(class="col-8 d-flex align-items-center justify-content-end p-0 gap-2")
-            {
-                if AppExist(@("&database"),"batch") {
-                    a(href="#<@BATCH_TASKMAN>#<jg>/importar.producto?exit_url_encode=#<url_encode(@MPI_PRODUCTO)>" class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print" title="Importar productos") {
-                        $"#<@ICON_FILE_CSV>"
-                    }
-                }
-
-                a(href="#<replace(@MPI_ADD_EDIT_PRODUCTO, '@id', '_new')>" class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print") {
-                    $"Agregar"
-                }
-
-                button(class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print" title="Imprimir" onclick="window.print()") {
-                    $"#<@ICON_PRINTER>"
-                }
-                
-                a(href="./" class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print" title="Refrescar") {
-                    $"#<@ICON_ARROW_CLOCKWISE>"
-                }
-                
-                a(href="/" target="_top" class="btn btn-sm border-secondary induxsoft-corners btn-main-action no-print" title="Salir") {
-                    $"#<@ICON_X_LG>"
-                }
-            }
-        }
-
         div(id="work_area" class="container-section pt-2")
         {
+            #! do uie.printV12FormBar(nav_config)
+            
+            #$
             form(action="./" method="GET" id="form_search" class="no-print my-1 d-flex py-1")
             {
                 "filter-text"(
@@ -65,84 +64,18 @@ module "list.dk"
                     "class"="w-100"
                 ){$""}
             }
-
-            div
-            {
-                #! lenght = list.count(productos)
-                if lenght <= 0
-                {
-                    message = ""
-                    if @@(@crud_context,"$parameters/s") == "" { message = "Sin registros." }
-                    else  { message = "Sin resultados." }
-
-                    #$ div(class="text-center")
-                    {
-                        h6(style="background-color: #F5F5F5; padding: 10rem 0;"){"#<message>"}
-                    }
-                }
-
-                #! else 
-                {
-                    #$ div(style="overflow-y:auto;max-height: 75vh;" class="mb-2" id="list_table_container")
-                    {
-                        table(class="table table-hover")
-                        {
-                            thead
-                            {
-                                tr
-                                {
-                                    th{$"Código"}
-                                    th{$"Descipción"}
-                                    th{$"Marca"}
-                                    th{$"Unidad"}
-                                    th{$"Existencia"}
-                                    th{$"Saldo"}
-                                    th{$"Costo último"}
-                                    th{$"Clase"}
-                                    th{$"Divisa"}
-                                    th(class="text-center no-print"){$"Acciones"}
-                                }
-                            }
-                            tbody
-                            {
-                                $""
-                                #! for i = 0; i < list.count(productos)
-                                {
-                                    ref producto = list.obj(productos, i)
-
-                                    #$ tr
-                                    {
-                                        td{$"#<@@(producto,'$codigo')>"}
-                                        td{$"#<@@(producto,'$descripcion')>"}
-                                        td{$"#<@@(producto,'$marca')>"}
-                                        td{$"#<@@(producto,'$unidad')>"}
-                                        td{$"#<@@(producto,'$existencia')>"}
-                                        td{$"#<@@(producto,'$saldo')>"}
-                                        td{$"#<@@(producto,'$costoultimo')>"}
-                                        td{$"#<@@(producto,'$clase')>"}
-                                        td{$"#<@@(producto,'$divisa')>"}
-                                        td
-                                        {
-                                            div(class="d-flex gap-2 justify-content-center")
-                                            {
-                                                a(href="#<replace(@MPI_ADD_EDIT_PRODUCTO, '@id', @@(producto,'sys_pk'))>" class="btn btn-sm btn-light no-print"){$"Editar"}
-                                                button(class="btn btn-sm btn-light no-print" onclick="InduxsoftCrudlModel.Delete(#<@@(producto,'sys_pk')>)"){$"Eliminar"}
-                                            }
-                                        }
-                                    }
-                                } 
-                            }
-                        }
-                    }
-                    #! a1 = ftext("Mostrando los primeros #<lenght> Productos ordenados por código.")
-                    #$ small(class="text-secondary"){$"#<a1>"}
-                }
-            }
+            #! do uie.dbeditable(table_definition, "tbl_mpi")
         }
 
-        div(id="status_bar" class="container-section")
-        {
-            $""
-        }
+        #$
+		script(type="text/javascript")
+		{$'
+			function getCurrentContext()
+			{
+				const table = document.getElementById("tbl_mpi");
+				const id = (table?.DataArray[table.CurrentRowIndex()]?.sys_pk ?? "");
+    			return { item_id:id, context: {} }
+			}
+		'}
     }
 }
