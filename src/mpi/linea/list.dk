@@ -21,7 +21,7 @@ module "list.dk"
         @"title": "Líneas de materias primas"
         @"buttons*": @null
         @"urlexit": "/"
-        @"main": "CE14,CE11,CE12,CE13"
+        // @"main": "CE14,CE11,CE12,CE13"
         @"actions*": dbr.apps.itemactions(@('&database'),"DET067","action","",0)
         @"reports*": dbr.apps.itemactions(@('&database'),"DET067","report","",0)
         @"jscurrentcontext": "getCurrentContext"

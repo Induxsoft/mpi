@@ -21,7 +21,7 @@ module "list.dk"
         @"title": "Materias primas e insumos"
         @"buttons*": @null
         @"urlexit": "/"
-        @"main": "CE24,CE21,CE22,CE23"
+        // @"main": "CE24,CE21,CE22,CE23"
         @"actions*": dbr.apps.itemactions(@('&database'),"DET02D","action","",0)
         @"reports*": dbr.apps.itemactions(@('&database'),"DET02D","report","",0)
         @"jscurrentcontext": "getCurrentContext"
