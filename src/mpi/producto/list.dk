@@ -21,7 +21,7 @@ module "list.dk"
         @"title": "Materias primas e insumos"
         @"buttons*": @null
         @"urlexit": "/"
-        // @"main": "CE24,CE21,CE22,CE23"
+        @"main": "CE14,CE11,CE12,CE13"
         @"actions*": dbr.apps.itemactions(@('&database'),"DET02D","action","",0)
         @"reports*": dbr.apps.itemactions(@('&database'),"DET02D","report","",0)
         @"jscurrentcontext": "getCurrentContext"
@@ -35,17 +35,53 @@ module "list.dk"
         {
             member @"codigo" { @"caption":"Código" }
             member @"descripcion" { @"caption":"Descripción" }
-            member @"marca" { @"caption": "Marca" }
-            member @"unidad" { @"caption": "Unidad" }
-            member @"existencia" { @"caption": "Existencia" }
-            member @"saldo" { @"caption": "Saldo" }
-            member @"costoultimo" { @"caption": "Costo último" }
-            member @"clase" { @"caption": "Clase" }
-            member @"divisa" { @"caption": "Divisa" }
+            member @"marca"
+            {
+                @"caption": "Marca"
+                @"align": "center"
+            }
+            member @"unidad"
+            {
+                @"caption": "Unidad"
+                @"align": "center"
+            }
+            member @"existencia"
+            {
+                @"caption": "Existencia"
+                @"align": "center"
+                @"format": @true
+                @"thousandssep": @true
+            }
+            member @"saldo"
+            {
+                @"caption": "Saldo"
+                @"align": "end"
+                @"format": @true
+                @"thousandssep": @true
+                @"decs": 4
+            }
+            member @"costoultimo"
+            {
+                @"caption": "Costo último"
+                @"align": "end"
+                @"format": @true
+                @"thousandssep": @true
+                @"decs": 4
+            }
+            member @"clase"
+            {
+                @"caption": "Clase"
+                @"align": "center"
+            }
+            member @"divisa"
+            {
+                @"caption": "Divisa"
+                @"align": "center"
+            }
         }
     }
     
-    #$ div(class="container p-0")
+    #$ div(class="container-fluid p-0")
     {
         div(id="work_area" class="container-section pt-2")
         {
