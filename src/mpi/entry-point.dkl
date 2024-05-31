@@ -9,7 +9,7 @@ module "Controller configs"
 	#include "dbr.folios.dkl"
 	#include "crudl/crudl.dk"
 	#include "dbr.security.dkl"
-	#include "dbr.apps.dkl"
+    #include "dbr.apps.dkl"
 	#include "dbr.events.dkl"
 
 	if @@(@http_context,"$session/user/ids") == "" {

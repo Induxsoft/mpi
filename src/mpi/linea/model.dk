@@ -20,6 +20,7 @@ module "model"
 
     function list(&db, &params)
     {
+	 do dbr.apps.action.grant("CE20")
         query="SELECT sys_pk, clase, codigo, descripcion, IFNULL(notas,'') notas
             FROM linea
             WHERE clase = 1
@@ -27,29 +28,78 @@ module "model"
             ORDER BY codigo
             LIMIT #<@default_max_rows>;"
         return dbr.list(db, ftext(query), params)
-    }
+		exception
+		{
+			do errordet(@false)
+			do dbr.apps.action.log()
+			do rise_error(last_error_code(),last_error())
+		}
+	}
 
     function create(&db, &params, &data)
     {
-        if @@(data,"codigo")=="" { do check_autocode(db,"linea","codigo",data) }
-        do entity.create(db, params, data)
-        
-        exception
-		{
-			do cu_error("línea")
-			do rise_error(last_error_code(), last_error())
-		}
+        @use_transaction = @false
+
+	do dbr.apps.action.pre("CE21")
+	do dbr.begin(db)
+		if @@(data,"codigo")=="" { do check_autocode(db,"linea","codigo",data) }
+        ref res = entity.create(db, params, data)
+        do dbr.apps.action.pos(res)
+		do dbr.commit(db)
+		do dbr.apps.action.ext(res)
+		return res
+	exception
+	{
+		do errordet(@false)
+		if dbr.in_transaction(db){ do dbr.rollback(db) }
+		do dbr.apps.action.log()
+		do rise_error(last_error_code(),last_error())
+	}
     }
 
     function update(&db, &params, &data)
     {
-        do entity.update(db, params, data)
-        exception
-		{
-			do cu_error("línea")
-			do rise_error(last_error_code(), last_error())
-		}
-    }
+	@use_transaction = @false
+
+	do dbr.apps.action.pre("CE22")
+	do dbr.begin(db)
+	
+        ref res= entity.update(db, params, data)
+		do dbr.apps.action.pos(res)
+		do dbr.commit(db)
+		do dbr.apps.action.ext(res)
+		return res
+	exception
+	{
+		do errordet(@false)
+		if dbr.in_transaction(db){ do dbr.rollback(db) }
+		do dbr.apps.action.log()
+		do rise_error(last_error_code(),last_error())
+	}
+	}
+	function linea.delete(&db, &params)
+	{
+		
+		@use_transaction = @false
+		do dbr.apps.action.pre("CE23")
+		do dbr.begin(db)
+		// intentar borrado físico
+        ref res= entity.delete(db, params)
+        do dbr.apps.action.pos(res)
+		do db.commit(db)
+		do dbr.apps.action.ext(res)
+    exception
+	{
+		do errordet(@false)
+		if dbr.in_transaction(db){ do dbr.rollback(db) }
+		do dbr.apps.action.log()
+		do rise_error(last_error_code(),last_error())
+	}
+
+        return res
+	}
+
+
 
     function cu_error(table)
     {
@@ -63,4 +113,6 @@ module "model"
     point @list to list
     point @create to create
     point @update to update
+	point @delete to linea.delete
+	
 }

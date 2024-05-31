@@ -1,0 +1,14 @@
+﻿itemid,description,itemparent
+mpi,Materias primas e insumos,\0
+mpi.producto,Materias primas e insumos,mpi
+CE10,Materias primas e insumos,mpi.producto
+CE11,Agregar materia prima,mpi.producto
+CE12,Editar materia prima,mpi.producto
+CE13,Eliminar materia prima,mpi.producto
+CE14,Importar materias primas,mpi.producto
+mpi.linea,Líneas de materias primas e insumos,mpi
+CE20,Líneas de materias primas,mpi.linea
+CE21,Agregar linea de materias primas,mpi.linea
+CE22,Editar linea de materias primas,mpi.linea
+CE23,Eliminar linea de materias primas,mpi.linea
+CE24,Importar línea de materias primas,mpi.linea

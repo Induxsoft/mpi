@@ -40,6 +40,9 @@ module "model"
 
     function mpi.crearProducto(&db, &params, &data)
     {
+	@use_transaction = @false
+	do dbr.apps.action.pre("CE11")
+	do dbr.begin(db)
         @table_name = "producto"
         if field.exist(data,"codbar1") && trim(@@(data,"$codbar1")) == "" { data<"codbar1*"> : @null }
         if field.exist(data,"codbar2") && trim(@@(data,"$codbar2")) == "" { data<"codbar2*"> : @null }
@@ -56,61 +59,19 @@ module "model"
 
         if @@(data,"codigo")=="" { do check_autocode(db,"producto","codigo",data) }
         
-        return entity.create(db, params, data)
-        
-        exception
+        ref res=entity.create(db, params, data)
+        do dbr.apps.action.pos(res)
+		do dbr.commit(db)
+		do dbr.apps.action.ext(res)
+		return res
+		exception
 		{
-			do cu_error("producto")
-			do rise_error(last_error_code(), last_error())
-		}
-    }
-	
-	function mpi.crear(&db, &params, &data)
-{
-  @use_transaction = @false
-
-do dbr.apps.action.pre("CE11")
-do dbr.begin(db)
-ref res= mpi.crearProducto(db,params,data)
-
-
-do dbr.apps.action.pos(res)
-do dbr.commit(db)
-do dbr.apps.action.ext(res)
-
-
-
-exception
-{
-    do errordet(@false)
-    if dbr.in_transaction(db){ do dbr.rollback(db) }
-    do dbr.apps.action.log()
-    do rise_error(last_error_code(),last_error())
-}
-}
-function mpi.actualizar(&db, &params, &data)
-{
-  @use_transaction = @false
-
-	do dbr.apps.action.pre("CE12")
-	do dbr.begin(db)
-	ref res= mpi.crearProducto(db,params,data)
-
-
-	do dbr.apps.action.pos(res)
-	do dbr.commit(db)
-	do dbr.apps.action.ext(res)
-
-
-
-	exception
-	{
 		do errordet(@false)
 		if dbr.in_transaction(db){ do dbr.rollback(db) }
 		do dbr.apps.action.log()
 		do rise_error(last_error_code(),last_error())
-	}
-}
+		}
+    }
 
     function mpi.obtenerDivisas(&db, &params)
     {
@@ -143,6 +104,8 @@ function mpi.actualizar(&db, &params, &data)
 
     function list(&db, &params)
     {
+	
+	do dbr.apps.action.grant("CE10")
         query = "
             SELECT p.sys_pk, p.codigo, p.descripcion, IFNULL(m.descripcion,'') marca, p.unidad, IFNULL(p.existencia,0) existencia,
                 IFNULL(p.saldo,0) saldo, IFNULL(p.costoultimo,0) costoultimo, REPLACE(SUBSTR(IFNULL(cc.const,''),2),'_',' ') clase,
@@ -157,36 +120,35 @@ function mpi.actualizar(&db, &params, &data)
             LIMIT #<@default_max_rows>;
         "
         return dbr.list(db, ftext(query), params)
-    }
-
-    function mpi.delete(&db, &params)
-    {
-        //if not(dbr.security.isauth(db,@CAT_AUT_DELETE_CAJERO)) { do rise_error(500,"No autorizado") }
-		
-		@use_transaction = @false
-
-		do dbr.apps.action.pre("CE13")
-		do dbr.begin(db)
-		
-        // intentar borrado físico
-        ref res = entity.delete(db, params)
-		
-		do dbr.apps.action.pos(res)
-		do dbr.commit(db)
-		do dbr.apps.action.ext(res)
-		
-		return res
-
-        exception
+		exception
 		{
 			do errordet(@false)
-			if dbr.in_transaction(db){ do dbr.rollback(db) }
 			do dbr.apps.action.log()
 			do rise_error(last_error_code(),last_error())
 		}
+
     }
+	function producto.delete(&db, &params)
+	{
+		
+		@use_transaction = @false
+		do dbr.apps.action.pre("CE13")
+		do dbr.begin(db)
+		// intentar borrado físico
+        ref res= entity.delete(db, params)
+        do dbr.apps.action.pos(res)
+		do db.commit(db)
+		do dbr.apps.action.ext(res)
+    exception
+	{
+		do errordet(@false)
+		if dbr.in_transaction(db){ do dbr.rollback(db) }
+		do dbr.apps.action.log()
+		do rise_error(last_error_code(),last_error())
+	}
 
-
+        return res
+	}
 
     function cu_error(table)
     {
@@ -200,8 +162,8 @@ function mpi.actualizar(&db, &params, &data)
         do valide_duplicate(fields, table, last_error(), last_error_code())
     }
 
-    point @create to mpi.crear
-    point @update to mpi.actualizar
-	point @delete to mpi.delete
+    point @create to mpi.crearProducto
+    point @update to mpi.crearProducto
     point @list to list
+	point @delete to producto.delete
 }

@@ -45,6 +45,7 @@ var producto =
 
         let data = main.getValues('form', true, reqCall);
         if (data==null) return;
+		let method=(Number(data.sys_pk)>0)?"PATCH":"POST";
 
         let d = {}
         Object.keys(data).forEach(k => {
@@ -54,7 +55,7 @@ var producto =
         InduxsoftCrudlModel.InvokeService(this.urlFormActn, d,
             success => { console.log(success); window.location.href = this.urlBack; },
             failure => { alert('No fue posible guardar el producto.\n'+JSON.stringify(failure)); },
-            "POST", false 
+            method, false 
         );
     },
     valide_factor(unit1,factor,unit2,msg)
