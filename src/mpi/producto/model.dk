@@ -152,7 +152,9 @@ function mpi.actualizar(&db, &params, &data)
                 INNER JOIN cclaseproducto cc ON p.iclase = cc.id
                 INNER JOIN divisa d ON p.idivisa = d.sys_pk
                 INNER JOIN linea l ON p.ilinea = l.sys_pk
-            WHERE IF(IFNULL(@s,'')='', true, (p.codigo LIKE CONCAT('%',@s,'%') OR p.descripcion LIKE CONCAT('%',@s,'%')))
+            WHERE NOT IFNULL(p.sys_deleted,0)
+                AND p.iclase = 1
+                AND IF(IFNULL(@s,'')='', true, (p.codigo LIKE CONCAT('%',@s,'%') OR p.descripcion LIKE CONCAT('%',@s,'%')))
             ORDER BY p.codigo
             LIMIT #<@default_max_rows>;
         "
