@@ -12,13 +12,14 @@ module "Controller configs"
     #include "dbr.apps.dkl"
 	#include "dbr.events.dkl"
 
-	if @@(@http_context,"$session/user/ids") == "" {
-		@http_context<"response/headers/location"> : "/"
-		return
-	}
-
 	@base_path="mpi"
 	@path_root="" // Establezca una ruta de ser necesario
+
+	if @@(@http_context,"$session/user/ids") == "" {
+		if file.exists("webshell/lost.dk") { include "webshell/lost.dk" }
+		else { @http_context<"response/headers/location"> : "/" }
+		return
+	}
 
 	//No modifique a menos que sepa lo que está haciendo
 	do crudl.routes.pattern("/_program/")
